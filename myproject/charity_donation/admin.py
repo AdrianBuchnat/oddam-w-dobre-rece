@@ -1,10 +1,10 @@
 from django.contrib import admin
 # from django.contrib.auth.admin import UserAdmin
-from .models import MyUser
+from .models import User, Category, Institution, Donation
 
 # Register your models here.
 
-class CustomUserAdmin(admin.ModelAdmin):
+class UserAdmin(admin.ModelAdmin):
     exclude = ('password',)
     ordering = ('email',)
     list_display = ('email', 'first_name', 'last_name', 'is_superuser')
@@ -13,4 +13,7 @@ class CustomUserAdmin(admin.ModelAdmin):
     readonly_fields = ('email',)
 
 
-admin.site.register(MyUser, CustomUserAdmin)
+admin.site.register(User, UserAdmin)
+admin.site.register(Category)
+admin.site.register(Institution)
+admin.site.register(Donation)

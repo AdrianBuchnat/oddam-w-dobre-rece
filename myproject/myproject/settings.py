@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = "charity_donation.MyUser"
+AUTH_USER_MODEL = "charity_donation.User"
 
 
 # Application definition

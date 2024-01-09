@@ -1,13 +1,13 @@
 from django.db import models
 from django.utils.text import gettext_lazy as _
 from django.core.validators import RegexValidator
-from django.contrib.auth.models import AbstractUser, BaseUserManager 
+from django.contrib.auth.models import AbstractUser, UserManager as DjangoUserManager 
 
 
 # Create your models here.
 
-class CustomUserManager(BaseUserManager): # 1.
-    use_in_migrations = True
+class UserManager(DjangoUserManager): # 1.
+    use_in_migrations = True # TODO: dowiedzieć się skąd się wzięło 
 
     def _create_user(self, email, password, **extra_fields):
         if not email:
@@ -35,21 +35,23 @@ class CustomUserManager(BaseUserManager): # 1.
         return self._create_user(email, password, **extra_fields)
 
 
-class MyUser(AbstractUser):
+class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
-    objects = CustomUserManager()
+    objects = UserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
+    def __str__(self):
+        return self.name
 
 
 class Institution(models.Model):
-    name = models.CharField(max_length=255, unique=True)
-    description = models.TextField()
+    name = models.CharField("Nazwa", max_length=255, unique=True)
+    description = models.TextField("Opis", max_length=512)
 
     FOUNDATION = 'FOU'
     NON_GOVERMENT_ORGANISATION = 'NGO'
@@ -60,11 +62,15 @@ class Institution(models.Model):
         LOCAL_COLLECTION: 'Zbiórka lokalna'
     }
     institution_type = models.CharField(
+        "Rodzaj instytucji",
         max_length = 3,
         choices = INSTITUTION_TYPE_CHOICE,
         default = FOUNDATION
     )
     categories = models.ManyToManyField(Category)
+
+    def __str__(self):
+        return self.name
 
 
 class Donation(models.Model):
@@ -81,4 +87,4 @@ class Donation(models.Model):
     pick_up_date = models.DateField()
     pick_up_time = models.TimeField()
     pick_up_comment = models.TextField()
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
