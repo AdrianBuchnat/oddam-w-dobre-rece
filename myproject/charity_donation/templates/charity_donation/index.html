@@ -15,13 +15,13 @@
     <section id="stats" class="stats">
       <div class="container container--85">
         <div class="stats--item">
-          <em>10</em>
+          <em>{{quantity_of_bags}}</em>
           <h3>Oddanych worków</h3>
           <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius est beatae, quod accusamus illum tempora!</p>
         </div>
 
         <div class="stats--item">
-          <em>5</em>
+          <em>{{organistaion_supported}}</em>
           <h3>Wspartych organizacji</h3>
           <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laboriosam magnam, sint nihil cupiditate quas quam.</p>
         </div>
@@ -67,7 +67,7 @@
       <div class="about-us--image"><img src='{% static "images/about-us.jpg" %}' alt="People in circle" /></div>
     </section>
 
-     <section id="help" class="help">
+    <section id="help" class="help">
       <h2>Komu pomagamy?</h2>
 
       <ul class="help--buttons">
@@ -79,34 +79,20 @@
       <!-- SLIDE 1 -->
       <div class="help--slides active" data-id="1">
         <p>W naszej bazie znajdziesz listę zweryfikowanych Fundacji, z którymi współpracujemy. Możesz sprawdzić czym się zajmują, komu pomagają i czego potrzebują.</p>
-
+        {% for instituion in instituions %}
+        {% if instituion.institution_type == "FOU" %}
         <ul class="help--slides-items">
           <li>
             <div class="col">
-              <div class="title">Fundacja "Dbam o Zdrowie"</div>
-              <div class="subtitle">Cel i misja: Pomoc dzieciom z ubogich rodzin.</div>
+              <div class="title">Fundacja "{{instituion.name}}"</div>
+              <div class="subtitle">Cel i misja: {{instituion.description}}</div>
             </div>
 
-            <div class="col"><div class="text">ubrania, jedzenie, sprzęt AGD, meble, zabawki</div></div>
+            <div class="col"><div class="text">{% for category in instituion.categories.all %}{{ category }} {% endfor %}</div></div>
           </li>
+          {% endif  %}
+          {% endfor %}
 
-          <li>
-            <div class="col">
-              <div class="title">Fundacja “Dla dzieci"</div>
-              <div class="subtitle">Cel i misja: Pomoc osobom znajdującym się w trudnej sytuacji życiowej.</div>
-            </div>
-
-            <div class="col"><div class="text">ubrania, meble, zabawki</div></div>
-          </li>
-
-          <li>
-            <div class="col">
-              <div class="title">Fundacja “Bez domu”</div>
-              <div class="subtitle">Cel i misja: Pomoc dla osób nie posiadających miejsca zamieszkania</div>
-            </div>
-
-            <div class="col"><div class="text">ubrania, jedzenie, ciepłe koce</div></div>
-          </li>
         </ul>
         <!-- Pagination
         <ul class="help--slides-pagination">
@@ -125,41 +111,19 @@
           quos suscipit corporis!
         </p>
         <ul class="help--slides-items">
+          {% for instituion in instituions %}
+          {% if instituion.institution_type == "NGO" %}
           <li>
             <div class="col">
-              <div class="title">Organizacja 1</div>
-              <div class="subtitle">Lorem ipsum dolor sit amet consectetur.</div>
+              <div class="title">{{instituion.name}}</div>
+              <div class="subtitle">{{instituion.description}}</div>
             </div>
 
-            <div class="col"><div class="text">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div></div>
+            <div class="col"><div class="text">{% for category in instituion.categories.all %}{{ category }} {% endfor %}</div></div>
           </li>
 
-          <li>
-            <div class="col">
-              <div class="title">Organizacja 2</div>
-              <div class="subtitle">Lorem ipsum dolor sit amet consectetur.</div>
-            </div>
-
-            <div class="col"><div class="text">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div></div>
-          </li>
-
-          <li>
-            <div class="col">
-              <div class="title">Organizacja 3</div>
-              <div class="subtitle">Lorem ipsum dolor sit amet consectetur.</div>
-            </div>
-
-            <div class="col"><div class="text">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div></div>
-          </li>
-
-          <li>
-            <div class="col">
-              <div class="title">Organizacja 4</div>
-              <div class="subtitle">Lorem ipsum dolor sit amet consectetur.</div>
-            </div>
-
-            <div class="col"><div class="text">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div></div>
-          </li>
+          {% endif  %}
+          {% endfor %}
         </ul>
 
         <!-- Pagination
@@ -177,24 +141,19 @@
       <div class="help--slides" data-id="3">
         <p>Lorem ipsum dolor sit amet, his ocurreret persequeris ea, ad utinam laudem duo. Verterem adipisci partiendo eos ne, ea his reque quaeque recteque, ne quo lobortis intellegam.</p>
         <ul class="help--slides-items">
+          {% for instituion in instituions %}
+          {% if instituion.institution_type == "LC" %}
           <li>
             <div class="col">
-              <div class="title">Lokalna zbiórka 1</div>
-              <div class="subtitle">Lorem ipsum dolor sit amet consectetur.</div>
+              <div class="title">{{instituion.name}}</div>
+              <div class="subtitle">{{instituion.description}}</div>
             </div>
 
-            <div class="col"><div class="text">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div></div>
+            <div class="col"><div class="text">{% for category in instituion.categories.all %}{{ category }} {% endfor %}</div></div>
           </li>
 
-          <li>
-            <div class="col">
-              <div class="title">Lokalna zbiórka 2</div>
-              <div class="subtitle">Lorem ipsum dolor sit amet consectetur.</div>
-            </div>
-
-            <div class="col"><div class="text">Lorem ipsum dolor sit amet consectetur adipisicing elit.</div></div>
-          </li>
-        </ul>
+          {% endif  %}
+          {% endfor %}
 
         <!-- Pagination
         <ul class="help--slides-pagination">

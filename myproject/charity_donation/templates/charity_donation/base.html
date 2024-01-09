@@ -19,7 +19,7 @@
         {% elif user %}
         <ul class="nav--actions">
           <li class="logged-user">
-            Witaj {{user.name}}
+            Witaj {{user.first_name}}
             <ul class="dropdown">
               <li><a href="#">Profil</a></li>
               <li><a href="#">Ustawienia</a></li>
@@ -44,7 +44,7 @@
     {% block content %}{% endblock content %}
 
         <footer>
-            <div class="contact">
+            <div class="contact" id="contact">
               <h2>Skontaktuj się z nami</h2>
               <h3>Formularz kontaktowy</h3>
               <form class="form--contact">
