@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser, UserManager as DjangoUserMa
 # Create your models here.
 
 class UserManager(DjangoUserManager): # 1.
-    use_in_migrations = True # TODO: dowiedzieć się skąd się wzięło 
+    use_in_migrations = True # TODO: dowiedzieć się skąd się wzięło -> https://docs.djangoproject.com/pl/5.0/topics/migrations/#model-managers
 
     def _create_user(self, email, password, **extra_fields):
         if not email:
@@ -37,7 +37,7 @@ class UserManager(DjangoUserManager): # 1.
 
 class User(AbstractUser):
     username = None
-    email = models.EmailField(unique=True)
+    email = models.EmailField(_('Email Adress'), unique=True)
     objects = UserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -51,7 +51,7 @@ class Category(models.Model):
 
 class Institution(models.Model):
     name = models.CharField("Nazwa", max_length=255, unique=True)
-    description = models.TextField("Opis", max_length=512)
+    description = models.CharField("Celi i misja", max_length=512)
 
     FOUNDATION = 'FOU'
     NON_GOVERMENT_ORGANISATION = 'NGO'
