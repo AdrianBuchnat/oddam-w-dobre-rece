@@ -29,7 +29,11 @@ class IndexView(View):
 
 class MainFormView(View):
     def get(self, request):
-        return render(request, "charity_donation/form.html")
+        if request.user.is_authenticated: 
+            return render(request, "charity_donation/form.html")
+        else:
+            return redirect('LoginPage')
+
 
 
 class RegisterView(View):
