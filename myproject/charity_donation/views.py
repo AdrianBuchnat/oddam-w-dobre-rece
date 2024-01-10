@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from .models import Institution, Donation, Category
+from .forms import UserCreationForm
+from django.contrib.auth import authenticate, login, logout
 
 
 # Create your views here.
@@ -34,12 +36,38 @@ class RegisterView(View):
     def get(self, request):
         return render(request, "charity_donation/register.html")
 
+    def post(self, request):
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("LoginPage")
+        else:
+            form = UserCreationForm()
+            return render(request, "charity_donation/register.html")
+
 
 class LoginView(View):
     def get(self, request):
         return render(request, "charity_donation/login.html")
+    
+    def post(self, request):
+        email = request.POST["email"]
+        password = request.POST["password"]
+        user = authenticate(request, email=email, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('MainPage')
+        else:
+            return redirect('RegisterPage')
+    
 
 
 class FormConfirmationView(View):
     def get(self, request):
         return render(request, "charity_donation/form-confirmation.html")
+    
+
+def logout_view(request):
+    logout(request)
+    return redirect('MainPage')
