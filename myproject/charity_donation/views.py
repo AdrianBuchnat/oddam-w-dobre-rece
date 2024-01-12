@@ -3,6 +3,7 @@ from django.views import View
 from .models import Institution, Donation, Category
 from .forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
+from django.core import serializers
 
 
 # Create your views here.
@@ -13,7 +14,7 @@ class IndexView(View):
         donations = Donation.objects.all()
 
         organistaion_supported = set()
-        quantity_of_bags = 0
+        quantity_of_bags = 0 # anotate agregate
         for donation in donations:
             quantity_of_bags += donation.quantity
             organistaion_supported.add(donation.user)
@@ -30,7 +31,21 @@ class IndexView(View):
 class MainFormView(View):
     def get(self, request):
         if request.user.is_authenticated: 
-            return render(request, "charity_donation/form.html")
+            categories = Category.objects.all()
+            institutions = Institution.objects.all()
+            institutionsJSON = serializers.serialize('json', Institution.objects.all())
+            categoriesJSON = serializers.serialize('json', Category.objects.all())
+
+
+
+            ctx = {
+                'categories': categories,
+                'instituions': institutions,
+                'institutionsJSON': institutionsJSON,
+                'categoriesJSON': categoriesJSON,
+            }
+
+            return render(request, "charity_donation/form.html", ctx)
         else:
             return redirect('LoginPage')
 

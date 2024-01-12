@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
   /**
    * HomePage - Help section
+   * 
    */
+
   class Help {
     constructor($el) {
       this.$el = $el;
@@ -56,9 +58,9 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     }
 
-    /**
-     * TODO: callback to page change event
-     */
+
+// TODO: callback to page change event
+
     changePage(e) {
       e.preventDefault();
       const page = e.target.dataset.page;
@@ -172,6 +174,7 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$prev = form.querySelectorAll(".prev-step");
       this.$step = form.querySelector(".form--steps-counter span");
       this.currentStep = 1;
+      this.tabOfCheckedBoxes = []
 
       this.$stepInstructions = form.querySelectorAll(".form--steps-instructions p");
       const $stepForms = form.querySelectorAll("form > div");
@@ -214,33 +217,151 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$form.querySelector("form").addEventListener("submit", e => this.submit(e));
     }
 
+    saveCategories() {
+        this.tabOfCheckedBoxes = []
+        const allCheckBoxes = document.querySelectorAll(".checkbox_categories");
+        allCheckBoxes.forEach(element => {
+          if (element.checked == true) {
+            this.tabOfCheckedBoxes.push(parseInt(element.value));
+          }
+        });
+        if(this.tabOfCheckedBoxes.length < 1){
+          window.alert('Musisz zaznaczyć chociaż jedną kategorię.');
+          this.currentStep--;
+        }
+    } 
+
+    validateQuantitiesOfBags(){
+      let quantityOfBags = document.querySelector("#quantityOfBags")
+      if (/^[1-9]\d*$/.test(quantityOfBags.value)) {
+      }
+      else{
+        window.alert('Wprowadzona liczba worków jest błędna! Nie może być mniejsza od jeden. ');
+        this.currentStep--;
+      }
+    }
+
+    showingInstytuionWithCorrectCattegory(){
+      const mainDiv3 = document.querySelector("#step3");
+      mainDiv3.innerHTML = '';
+
+      const h3 = document.createElement('h3');
+      h3.innerText = 'Wybierz organizacje, której chcesz pomóc:';
+      mainDiv3.appendChild(h3);
+
+      instituions.forEach(instituion => {
+
+        let present = true;
+        for (let i = 0; i < this.tabOfCheckedBoxes.length; i++) {
+          let cat = this.tabOfCheckedBoxes[i];
+        
+          if (!instituion.fields.categories.includes(cat)) {
+            present = false;
+            break;
+          }
+        }
+
+        if (present) {    
+
+          const institutionDiv = document.createElement('div');
+          institutionDiv.className = 'form-group form-group--checkbox';
+
+            const institutionLabel = document.createElement('label');
+            institutionDiv.appendChild(institutionLabel);
+
+              const labelInput = document.createElement("input");
+              labelInput.type = "radio";
+              labelInput.name = "organization";
+              labelInput.value = instituion.pk;
+              institutionLabel.appendChild(labelInput)
+
+              const spanCheckboxLabel = document.createElement("span");
+              spanCheckboxLabel.className = "checkbox radio";
+              institutionLabel.appendChild(spanCheckboxLabel);
+
+              const spanDescriptionLabel = document.createElement("span");
+              spanDescriptionLabel.className = "description";
+              institutionLabel.appendChild(spanDescriptionLabel);
+
+                const spanDescriptionDiv = document.createElement("div");
+                spanDescriptionDiv.className = "title"
+                if (instituion.fields.institution_type == "FOU") spanDescriptionDiv.innerText = `Fundacja "${instituion.fields.name}"`;
+                if (instituion.fields.institution_type == "NGO") spanDescriptionDiv.innerText = `Organizacjia pozarządowa "${instituion.fields.name}"`;
+                if (instituion.fields.institution_type == "LC") spanDescriptionDiv.innerText = `Lokalna zbiórka  "${instituion.fields.name}"`;
+                spanDescriptionLabel.appendChild(spanDescriptionDiv);
+
+                const spanSubtitleDiv = document.createElement("div");
+                spanSubtitleDiv.className = "subtitle";
+                spanSubtitleDiv.innerHTML = `${instituion.fields.description}`
+                spanDescriptionLabel.appendChild(spanSubtitleDiv);
+
+            mainDiv3.appendChild(institutionDiv);
+        }
+      });
+
+      const divForButtons = document.createElement("div");
+      divForButtons.className = "form-group form-group--buttons";
+      mainDiv3.appendChild(divForButtons);
+
+        const buttonPrev = document.createElement("button");
+        buttonPrev.className = "btn prev-step";
+        buttonPrev.innerText = "Wstecz";
+        buttonPrev.addEventListener('click', e => {
+          e.preventDefault();
+          this.currentStep--;
+          this.updateForm();
+        });
+        divForButtons.appendChild(buttonPrev);
+   
+        const buttonNext = document.createElement("button");
+        buttonNext.className = "btn next-step";
+        buttonNext.innerText = "Dalej";
+        buttonNext.addEventListener("click", e => {
+          e.preventDefault();
+          this.currentStep++;
+          this.updateForm();
+        });
+        divForButtons.appendChild(buttonNext);
+
+    }
+
     /**
      * Update form front-end
      * Show next or previous section etc.
      */
+
+    
+
     updateForm() {
       this.$step.innerText = this.currentStep;
 
       // TODO: Validation
-
+      if(this.currentStep == 2)this.saveCategories();
+      if(this.currentStep == 3){ 
+        this.validateQuantitiesOfBags();
+        this.showingInstytuionWithCorrectCattegory();
+      }
+      
       this.slides.forEach(slide => {
         slide.classList.remove("active");
-
+        
         if (slide.dataset.step == this.currentStep) {
           slide.classList.add("active");
         }
       });
-
+      
+      
       this.$stepInstructions[0].parentElement.parentElement.hidden = this.currentStep >= 6;
       this.$step.parentElement.hidden = this.currentStep >= 6;
-
+      
       // TODO: get data from inputs and show them in summary
+
     }
 
     /**
      * Submit form
      *
-     * TODO: validation, send data to server
+     * // TODO: validation, send data to server
      */
     submit(e) {
       e.preventDefault();

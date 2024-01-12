@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser, UserManager as DjangoUserMa
 # Create your models here.
 
 class UserManager(DjangoUserManager): # 1.
-    use_in_migrations = True # TODO: dowiedzieć się skąd się wzięło -> https://docs.djangoproject.com/pl/5.0/topics/migrations/#model-managers
+    # use_in_migrations = True # TODO: dowiedzieć się skąd się wzięło -> https://docs.djangoproject.com/pl/5.0/topics/migrations/#model-managers
 
     def _create_user(self, email, password, **extra_fields):
         if not email:
