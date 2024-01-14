@@ -231,12 +231,20 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     } 
 
+    spanQuantity = document.createElement("span"); // span to function validateQuantitiesOfBags
+
     validateQuantitiesOfBags(){
       let quantityOfBags = document.querySelector("#quantityOfBags")
       if (/^[1-9]\d*$/.test(quantityOfBags.value)) {
+        this.spanQuantity.innerText = '';
+        quantityOfBags.style.backgroundColor = '';
       }
       else{
-        window.alert('Wprowadzona liczba worków jest błędna! Nie może być mniejsza od jeden. ');
+        quantityOfBags.style.backgroundColor = '#FFDDDD';
+        this.spanQuantity.innerText = ' Worków musi być więcej niż 0!';
+        this.spanQuantity.style.color = '#FF3333';
+        this.spanQuantity.style.fontWeight = 'bold';
+        quantityOfBags.parentElement.appendChild(this.spanQuantity);
         this.currentStep--;
       }
     }
@@ -325,6 +333,138 @@ document.addEventListener("DOMContentLoaded", function() {
 
     }
 
+
+    step3valid(){
+      const step3inputs = document.querySelectorAll("#step3 > div > label > input");
+      let checked = false
+      for (let i = 0; i < step3inputs.length; i++) {
+        if (step3inputs[i].checked){
+          checked = true
+        }
+      }
+      if (!checked) {
+        window.alert('Przynajmniej jedno pole musi być zaznaczone!');
+        this.currentStep--;
+      }
+    }
+
+    dataAndTime(){
+      const data = document.querySelector('input[name="data"]');
+    //   const time = document.querySelector('input[name="time"]');
+
+    //   const today = new Date().getDay();
+      let monday = new Date();
+
+      data.min = monday.toISOString().split('T')[0];
+
+    }
+
+    step4valid(){
+      const address = document.querySelector('input[name="address"]');
+      const city = document.querySelector('input[name="city"]');
+      const postcode = document.querySelector('input[name="postcode"]');
+      const phone = document.querySelector('input[name="phone"]');
+      const time = document.querySelector('input[name="time"]');
+      let controlNumber = 0
+
+      if (address.value < 1) {
+        console.log(address)
+        address.placeholder = 'Musisz podać adres!';
+        address.style.backgroundColor = '#FFDDDD';
+        controlNumber = 1
+      }
+
+      if (city.value < 1) {
+        city.placeholder = 'Musisz podać miasto!';
+        city.style.backgroundColor = '#FFDDDD';
+        controlNumber = 1
+      }
+
+      if (!/^\d{2}-\d{3}$/.test(postcode.value)) {
+        postcode.placeholder = 'Kod musi mieć format 00-000';
+        postcode.style.backgroundColor = '#FFDDDD';
+        controlNumber = 1
+      }
+
+      if (!/^\d{9}$/.test(phone.value)) {
+        phone.placeholder = 'Numer jest za krótki!';
+        phone.innerText = '';
+        phone.style.backgroundColor = '#FFDDDD';
+        controlNumber = 1
+      }
+
+      if(/^--:--$/.test(time.innerText)) {
+        time.style.backgroundColor = '#FFDDDD';
+        controlNumber = 1
+      } 
+      else{
+        time.style.backgroundColor = "";
+      }
+
+
+      this.currentStep -= controlNumber;
+    }
+
+    step5Summary(){
+      const address = document.querySelector('input[name="address"]');
+      const city = document.querySelector('input[name="city"]');
+      const postcode = document.querySelector('input[name="postcode"]');
+      const phone = document.querySelector('input[name="phone"]');
+      const data = document.querySelector('input[name="data"]');
+      const time = document.querySelector('input[name="time"]');
+      const more_info = document.querySelector('textarea[name="more_info"]');
+      const quantityOfBags = document.querySelector("#quantityOfBags")
+      const institutionChecked = document.querySelector("#step3 > div > label > input:checked");
+
+      if (more_info.value.length < 1) {
+        more_info.value = 'Brak uwag'
+      }
+
+      let instituionToShow;
+
+      instituions.forEach(institution => {
+        if (institution.pk == institutionChecked.value) {
+          instituionToShow = institution
+        }
+      });
+
+      let summaryDiv = document.querySelector('.summary');
+
+      let formSection1 = document.createElement('div');
+      formSection1.className = 'form-section';
+
+      formSection1.innerHTML = 
+      `<h4>Oddajesz:</h4>
+      <ul>
+        <li>
+          <span class="icon icon-bag"></span>
+          <span class="summary--text">${quantityOfBags.value} worki </span>
+        </li>
+        <li>
+          <span class="icon icon-hand"></span>
+          <span class="summary--text">Dla " ${instituionToShow.fields.name} "</span>
+        </li>
+      </ul>`;
+
+      summaryDiv.appendChild(formSection1);
+
+      let formSection2 = document.createElement(`div`);
+      formSection2.className = `form-section form-section--columns`;
+
+      let formSectionColumn1 = document.createElement(`div`);
+      formSectionColumn1.className = `form-section--column`;
+      formSectionColumn1.innerHTML = `<h4>Adres odbioru:</h4><ul><li>${address.value}</li><li>${city.value}</li><li>${postcode.value}</li><li>${phone.value}</li></ul>`;
+      formSection2.appendChild(formSectionColumn1);
+
+      let formSectionColumn2 = document.createElement(`div`);
+      formSectionColumn2.className = `form-section--column`;
+      formSectionColumn2.innerHTML = `<h4>Termin odbioru:</h4><ul><li>${data.value}</li><li>${time.value}</li><li>${more_info.value}</li></ul>`;
+      formSection2.appendChild(formSectionColumn2);
+
+      summaryDiv.appendChild(formSection2);
+
+    }
+
     /**
      * Update form front-end
      * Show next or previous section etc.
@@ -336,12 +476,17 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$step.innerText = this.currentStep;
 
       // TODO: Validation
-      if(this.currentStep == 2)this.saveCategories();
+      if(this.currentStep == 2) this.saveCategories();
       if(this.currentStep == 3){ 
         this.validateQuantitiesOfBags();
         this.showingInstytuionWithCorrectCattegory();
       }
-      
+      if (this.currentStep == 4){
+        this.step3valid()
+        this.dataAndTime()
+      };
+      if (this.currentStep == 5) this.step4valid();
+            
       this.slides.forEach(slide => {
         slide.classList.remove("active");
         
@@ -350,11 +495,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }
       });
       
+      if (this.currentStep == 5) this.step5Summary()
       
       this.$stepInstructions[0].parentElement.parentElement.hidden = this.currentStep >= 6;
       this.$step.parentElement.hidden = this.currentStep >= 6;
       
-      // TODO: get data from inputs and show them in summary
 
     }
 
