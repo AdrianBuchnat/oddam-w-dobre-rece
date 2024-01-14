@@ -175,6 +175,7 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$step = form.querySelector(".form--steps-counter span");
       this.currentStep = 1;
       this.tabOfCheckedBoxes = []
+      this.bodyToSave;
 
       this.$stepInstructions = form.querySelectorAll(".form--steps-instructions p");
       const $stepForms = form.querySelectorAll("form > div");
@@ -405,6 +406,7 @@ document.addEventListener("DOMContentLoaded", function() {
       this.currentStep -= controlNumber;
     }
 
+
     step5Summary(){
       const address = document.querySelector('input[name="address"]');
       const city = document.querySelector('input[name="city"]');
@@ -510,8 +512,21 @@ document.addEventListener("DOMContentLoaded", function() {
      */
     submit(e) {
       e.preventDefault();
+      
+      fetch('http://127.0.0.1:8000/formularz/', {
+        // headers: {
+        // 'Content-Type': 'application/json'
+        // }
+      })
+        .then(res => console.log(res))
+        .then(data => console.log(data))
+
+
       this.currentStep++;
       this.updateForm();
+
+      const form = document.querySelector('form');
+      console.log(form)
     }
   }
   const form = document.querySelector(".form--steps");

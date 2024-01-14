@@ -34,15 +34,11 @@ class MainFormView(View):
             categories = Category.objects.all()
             institutions = Institution.objects.all()
             institutionsJSON = serializers.serialize('json', Institution.objects.all())
-            categoriesJSON = serializers.serialize('json', Category.objects.all())
-
-
 
             ctx = {
                 'categories': categories,
                 'instituions': institutions,
                 'institutionsJSON': institutionsJSON,
-                'categoriesJSON': categoriesJSON,
             }
 
             return render(request, "charity_donation/form.html", ctx)
