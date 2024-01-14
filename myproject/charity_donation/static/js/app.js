@@ -369,7 +369,6 @@ document.addEventListener("DOMContentLoaded", function() {
       let controlNumber = 0
 
       if (address.value < 1) {
-        console.log(address)
         address.placeholder = 'Musisz podać adres!';
         address.style.backgroundColor = '#FFDDDD';
         controlNumber = 1
@@ -389,12 +388,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
       if (!/^\d{9}$/.test(phone.value)) {
         phone.placeholder = 'Numer jest za krótki!';
-        phone.innerText = '';
+        phone.value = '';
         phone.style.backgroundColor = '#FFDDDD';
         controlNumber = 1
       }
 
-      if(/^--:--$/.test(time.innerText)) {
+      if(time.value.length < 4) {
         time.style.backgroundColor = '#FFDDDD';
         controlNumber = 1
       } 

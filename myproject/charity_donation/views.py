@@ -4,6 +4,7 @@ from .models import Institution, Donation, Category
 from .forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
+from django.db.models import Count, Sum
 
 
 # Create your views here.
@@ -11,17 +12,13 @@ class IndexView(View):
     def get(self, request):
 
         institutions = Institution.objects.all()
-        donations = Donation.objects.all()
 
-        organistaion_supported = set()
-        quantity_of_bags = 0 # anotate agregate
-        for donation in donations:
-            quantity_of_bags += donation.quantity
-            organistaion_supported.add(donation.user)
+        quantity_of_bags = Donation.objects.aggregate(Sum("quantity"))  # anotate agregate
+        organistaion_supported = [org['institution_id'] for org in Donation.objects.values('institution_id').annotate(total=Count('institution_id'))]
 
         ctx = {
             'instituions': institutions,
-            'quantity_of_bags': quantity_of_bags,
+            'quantity_of_bags': quantity_of_bags['quantity__sum'],
             'organistaion_supported': len(organistaion_supported),
         }
 
