@@ -63,6 +63,7 @@
         <div class="form--steps-counter">Krok <span>1</span>/5</div>
 
         <form action='{% url "FormConfirmationPage" %}' method="post">
+          {% csrf_token %}
           <!-- STEP 1: class .active is switching steps -->
           <div data-step="1" class="active">
             <h3>Zaznacz co chcesz oddać:</h3>
@@ -112,40 +113,6 @@
           <div data-step="3" id="step3">
             <h3>Wybierz organizacje, której chcesz pomóc:</h3>
             
-            {% comment %} {% for instituion in instituions %}
-            
-            <div class="form-group form-group--checkbox">
-              <label>
-                <input type="radio" name="organization" value="{{instituion.pk}}" />
-                <span class="checkbox radio"></span>
-                <span class="description">
-                  <div class="title">
-                    {% if instituion.institution_type == "FOU" %}Fundacja “{{instituion.name}}”
-                    {% elif instituion.institution_type == "NGO" %}Organizacja pozarządowa “{{instituion.name}}”
-                    {% elif instituion.institution_type == "LC" %}Lokalna zbiruka “{{instituion.name}}”
-                    {% endif %}
-                  </div>
-                  <div class="subtitle">
-                    Cel i misja: {{instituion.description}}
-                  </div>
-                </span>
-              </label>
-            </div>
-            {% endfor %} {% endcomment %}
-
-            {% comment %} <div class="form-group form-group--checkbox">
-              <label>
-                <input type="radio" name="organization" value="old" />
-                <span class="checkbox radio"></span>
-                <span class="description">
-                  <div class="title">Fundacja “Dla dzieci"</div>
-                  <div class="subtitle">
-                    Cel i misja: Pomoc osobom znajdującym się w trudnej sytuacji
-                    życiowej.
-                  </div>
-                </span>
-              </label>
-            </div> {% endcomment %}
 
             <div class="form-group form-group--buttons">
               <button type="button" class="btn prev-step">Wstecz</button>

@@ -252,11 +252,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     showingInstytuionWithCorrectCattegory(){
       const mainDiv3 = document.querySelector("#step3");
-      mainDiv3.innerHTML = '';
 
-      const h3 = document.createElement('h3');
-      h3.innerText = 'Wybierz organizacje, której chcesz pomóc:';
-      mainDiv3.appendChild(h3);
+      //REMOVING OLD CHILDRENS
+      for(let i = mainDiv3.children.length - 2; i>= 1; i--){
+        mainDiv3.removeChild(mainDiv3.children[i])
+      }
 
       instituions.forEach(instituion => {
 
@@ -304,33 +304,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 spanSubtitleDiv.innerHTML = `${instituion.fields.description}`
                 spanDescriptionLabel.appendChild(spanSubtitleDiv);
 
-            mainDiv3.appendChild(institutionDiv);
+            mainDiv3.insertBefore(institutionDiv, mainDiv3.children[1]);
         }
       });
-
-      const divForButtons = document.createElement("div");
-      divForButtons.className = "form-group form-group--buttons";
-      mainDiv3.appendChild(divForButtons);
-
-        const buttonPrev = document.createElement("button");
-        buttonPrev.className = "btn prev-step";
-        buttonPrev.innerText = "Wstecz";
-        buttonPrev.addEventListener('click', e => {
-          e.preventDefault();
-          this.currentStep--;
-          this.updateForm();
-        });
-        divForButtons.appendChild(buttonPrev);
-   
-        const buttonNext = document.createElement("button");
-        buttonNext.className = "btn next-step";
-        buttonNext.innerText = "Dalej";
-        buttonNext.addEventListener("click", e => {
-          e.preventDefault();
-          this.currentStep++;
-          this.updateForm();
-        });
-        divForButtons.appendChild(buttonNext);
 
     }
 
@@ -405,31 +381,32 @@ document.addEventListener("DOMContentLoaded", function() {
       this.currentStep -= controlNumber;
     }
 
-
+    formdata;
+    
     step5Summary(){
-      const address = document.querySelector('input[name="address"]');
-      const city = document.querySelector('input[name="city"]');
-      const postcode = document.querySelector('input[name="postcode"]');
-      const phone = document.querySelector('input[name="phone"]');
-      const data = document.querySelector('input[name="data"]');
-      const time = document.querySelector('input[name="time"]');
-      const more_info = document.querySelector('textarea[name="more_info"]');
-      const quantityOfBags = document.querySelector("#quantityOfBags")
-      const institutionChecked = document.querySelector("#step3 > div > label > input:checked");
+      this.formdata = new FormData(document.querySelector('form'));
 
-      if (more_info.value.length < 1) {
-        more_info.value = 'Brak uwag'
+      if (this.formdata.get('more_info') < 1) {
+        this.formdata.set('more_info', 'Brak uwag.')
       }
 
-      let instituionToShow;
+      let instituionToShow, quantityOfBags;
 
       instituions.forEach(institution => {
-        if (institution.pk == institutionChecked.value) {
+        if (institution.pk == this.formdata.get('organization')) {
           instituionToShow = institution
         }
       });
 
+      if(this.formdata.get('bags') == 1)
+      {quantityOfBags = 'Oddajesz potrzebującym 1 worek, dziękujemy :)'}
+      else if(this.formdata.get('bags') < 5)
+      {quantityOfBags = `Oddajesz potrzebującym ${this.formdata.get('bags')} worki, hojny gest, dziękujemy!`}
+      else
+      {quantityOfBags = `Oddajesz potrzebującym ${this.formdata.get('bags')} worków! Jesteś prawdziwym dobroczyńcą!`}
+
       let summaryDiv = document.querySelector('.summary');
+      summaryDiv.innerHTML = ''
 
       let formSection1 = document.createElement('div');
       formSection1.className = 'form-section';
@@ -439,7 +416,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <ul>
         <li>
           <span class="icon icon-bag"></span>
-          <span class="summary--text">${quantityOfBags.value} worki </span>
+          <span class="summary--text">${quantityOfBags}</span>
         </li>
         <li>
           <span class="icon icon-hand"></span>
@@ -454,12 +431,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
       let formSectionColumn1 = document.createElement(`div`);
       formSectionColumn1.className = `form-section--column`;
-      formSectionColumn1.innerHTML = `<h4>Adres odbioru:</h4><ul><li>${address.value}</li><li>${city.value}</li><li>${postcode.value}</li><li>${phone.value}</li></ul>`;
+      formSectionColumn1.innerHTML = `<h4>Adres odbioru:</h4><ul><li>${this.formdata.get('address')}</li><li>${this.formdata.get('city')}</li><li>${this.formdata.get('postcode')}</li><li>${this.formdata.get('phone')}</li></ul>`;
       formSection2.appendChild(formSectionColumn1);
 
       let formSectionColumn2 = document.createElement(`div`);
       formSectionColumn2.className = `form-section--column`;
-      formSectionColumn2.innerHTML = `<h4>Termin odbioru:</h4><ul><li>${data.value}</li><li>${time.value}</li><li>${more_info.value}</li></ul>`;
+      formSectionColumn2.innerHTML = `<h4>Termin odbioru:</h4><ul><li>${this.formdata.get('data')}</li><li>${this.formdata.get('time')}</li><li>${this.formdata.get('more_info')}</li></ul>`;
       formSection2.appendChild(formSectionColumn2);
 
       summaryDiv.appendChild(formSection2);
@@ -512,13 +489,16 @@ document.addEventListener("DOMContentLoaded", function() {
     submit(e) {
       e.preventDefault();
       
-      fetch('http://127.0.0.1:8000/formularz/', {
-        // headers: {
-        // 'Content-Type': 'application/json'
-        // }
+      console.log(this.formdata)
+
+      fetch('/formularz/', {
+        method: "POST",
+        body: this.formdata,
       })
-        .then(res => console.log(res))
-        .then(data => console.log(data))
+        .then(res => res)
+        .then(data => console.log(JSON.stringify(data)))
+        .catch(err => console.log(err));
+
 
 
       this.currentStep++;
