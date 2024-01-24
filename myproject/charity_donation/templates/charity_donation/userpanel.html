@@ -1,0 +1,41 @@
+{% extends "charity_donation/base.html" %}
+{% load static %}
+{% block title %}Panel użytkownika{% endblock title %}
+{% block content %}
+    <h2>Panel użykownika</h2>
+</header> 
+
+<section class="container container--70"  style='margin-bottom: 10em;'>
+    <div style='text-align:center; font-size: 3em;'><b>Email:</b> {{user.email}}</div>
+    <div style='text-align:center; font-size: 3em;'><b>Imię:</b> {{user.first_name}}</div>
+    <div style='text-align:center; font-size: 3em;'><b>Nazwisko:</b> {{user.last_name}}</div>
+</section>
+
+<section>
+    <h2>Przekazane dary</h2>
+
+    {% for donation in donations %}
+    <div style='margin-bottom: 7em; text-align:center; {% if donation.is_taken %} color: grey; {% endif %}'>
+        <h3 style='font-size: 3.5em; margin-bottom: 5px;'>Donacja</h3>
+        <div style='font-size: 2.5em; margin-bottom: 15px;'><b>Przekazane worki:</b><br /> {{donation.quantity}}</div>
+        <div style='font-size: 2.5em; margin-bottom: 15px;'><b>Której instytucji:</b><br /> {{donation.institution}}</div>
+        <div style='font-size: 2.5em; margin-bottom: 15px;'><b>Co przekazano:</b> {% for category in donation.categories.all %} <br /> {{category}}  {% endfor %}</div>
+        <div style='font-size: 2.5em; margin-bottom: 15px;'><b>Dane odbioru:</b> 
+            <br/> Miasto: {{donation.city}}  
+            <br/> Adres: {{ donation.address }} 
+            <br/> Kod pocztowy: {{donation.zip_code}} 
+            <br/>
+            <br/> Data odbioru: {{donation.pick_up_date}} {{donation.pick_up_time}}
+            <br/> Komentarz dla kuriera: {{donation.pick_up_comment}} 
+        </div>
+        {% if donation.is_taken == False%}
+        <a href={% url "Taken" donation.pk %} method='POST'><button class='btn btn--large'>Już zabrane</button></a>
+        {% endif %}
+    </div>
+    {% endfor %}
+</section>
+
+
+
+    <script src='{% static "js/app.js" %}'></script>
+{% endblock content %}

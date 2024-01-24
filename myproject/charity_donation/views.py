@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from .models import Institution, Donation, Category
 from .forms import UserCreationForm
@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from django.db.models import Sum
 from django.http import HttpResponse
+from django.views.generic import UpdateView
 
 
 # Create your views here.
@@ -109,3 +110,23 @@ class FormConfirmationView(View):
 def logout_view(request):
     logout(request)
     return redirect('MainPage')
+
+class UserPanelView(View):
+    def get(self, request):
+        if request.user.is_anonymous:
+            return redirect('LoginPage')
+        else:
+            donations = Donation.objects.filter(user_id=request.user).order_by('is_taken')
+            ctx = {
+                'donations': donations,
+            }
+            return render(request, "charity_donation/userpanel.html", ctx)
+        
+
+class TekenDonationTrue(View):
+        def get(self, request, pk):
+            donation = get_object_or_404(Donation, pk=pk)
+            if request.user == donation.user:
+                donation.is_taken = True
+                donation.save()
+            return redirect('UserPanel')
