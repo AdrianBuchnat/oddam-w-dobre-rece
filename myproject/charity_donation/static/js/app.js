@@ -491,13 +491,15 @@ document.addEventListener("DOMContentLoaded", function() {
       
       console.log(this.formdata)
 
-      fetch('/formularz/', {
+      fetch('/dziekujemy/', {
         method: "POST",
         body: this.formdata,
       })
         .then(res => res)
-        .then(data => console.log(JSON.stringify(data)))
-        .catch(err => console.log(err));
+        .then(data => JSON.stringify(data))
+        .catch(err => err);
+
+        location.replace("/dziekujemy/")
 
 
 
