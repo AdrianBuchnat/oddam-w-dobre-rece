@@ -8,15 +8,23 @@
 
     </header>
 
-    <div style='margin-left: auto; margin-right:auto;'>
-        <form method="post"  enctype="multipart/form-data">
-            {% csrf_token %}
 
-            {{form.as_div}}
+        <div style='text-align:center; font-size: 3em;'><b>Imię:</b> {{user.first_name}}</div>
+        <div style='text-align:center; font-size: 3em; margin-bottom:10px;'><b>Nazwisko:</b> {{user.last_name}}</div>
+    
+    <section class="container"  style='margin-bottom: 10em; width:430px; text-align:center;'>
+        <div style='margin-left: auto; margin-right:auto;'>
+            <form method="post"  enctype="multipart/form-data text-align:center;">
+                {% csrf_token %}
+                <input type='text' placeholder="Imię" style='text-align:center; font-size: 3em; margin-left: auto; margin-right:auto;'></input>
+                <input type='text' placeholder="Nazwisko" style='text-align:center; font-size: 3em; margin-left: auto; margin-right:auto; margin-top: 3px; margin-bottom: 4px;'></input>
 
-            <button class="btn" type="submit">Aktualizuj</button>
-        </form>
-    </div>
+
+                <button class="btn btn--large" style="margin-left: auto; margin-right:auto;" type="submit">Aktualizuj</button>
+            </form>
+        </div>
+    </section>
+
 
 
     <script src='{% static "js/app.js" %}'></script>
