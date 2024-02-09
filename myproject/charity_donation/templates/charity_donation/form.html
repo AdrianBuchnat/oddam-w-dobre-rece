@@ -95,7 +95,7 @@
             <div class="form-group form-group--inline">
               <label>
                 Liczba 60l worków:
-                <input id="quantityOfBags" type="number" name="bags" step="1" min="1" value="1" requaired/>
+                <input id="quantityOfBags" type="number" name="quantity" step="1" min="1" value="1" requaired/>
               </label>
             </div>
 
@@ -135,13 +135,13 @@
 
                 <div class="form-group form-group--inline">
                   <label>
-                    Kod pocztowy <input type="text" name="postcode" />
+                    Kod pocztowy <input type="text" name="zip_code" />
                   </label>
                 </div>
 
                 <div class="form-group form-group--inline">
                   <label>
-                    Numer telefonu <input type="phone" name="phone" />
+                    Numer telefonu <input type="phone" name="phone_number" />
                   </label>
                 </div>
               </div>
@@ -149,17 +149,17 @@
               <div class="form-section--column">
                 <h4>Termin odbioru</h4>
                 <div class="form-group form-group--inline">
-                  <label> Data <input type="date" name="data" /> </label>
+                  <label> Data <input type="date" name="pick_up_date" /> </label>
                 </div>
 
                 <div class="form-group form-group--inline">
-                  <label> Godzina <input type="time" name="time" /> </label>
+                  <label> Godzina <input type="time" name="pick_up_time" /> </label>
                 </div>
 
                 <div class="form-group form-group--inline">
                   <label>
                     Uwagi dla kuriera
-                    <textarea name="more_info" rows="5"></textarea>
+                    <textarea name="pick_up_comment" rows="5"></textarea>
                   </label>
                 </div>
               </div>
@@ -175,45 +175,7 @@
             <h3>Podsumowanie Twojej darowizny</h3>
 
             <div class="summary">
-              {% comment %} <div class="form-section">
-                <h4>Oddajesz:</h4>
-                <ul>
-                  <li>
-                    <span class="icon icon-bag"></span>
-                    <span class="summary--text"
-                      >4 worki ubrań w dobrym stanie dla dzieci</span
-                    >
-                  </li>
 
-                  <li>
-                    <span class="icon icon-hand"></span>
-                    <span class="summary--text"
-                      >Dla fundacji "Mam marzenie" w Warszawie</span
-                    >
-                  </li>
-                </ul>
-              </div>
-
-              <div class="form-section form-section--columns">
-                <div class="form-section--column">
-                  <h4>Adres odbioru:</h4>
-                  <ul>
-                    <li>Prosta 51</li>
-                    <li>Warszawa</li>
-                    <li>99-098</li>
-                    <li>123 456 789</li>
-                  </ul>
-                </div>
-
-                <div class="form-section--column">
-                  <h4>Termin odbioru:</h4>
-                  <ul>
-                    <li>13/12/2018</li>
-                    <li>15:40</li>
-                    <li>Brak uwag</li>
-                  </ul>
-                </div>
-              </div> {% endcomment %}
             </div>
 
             <div class="form-group form-group--buttons">

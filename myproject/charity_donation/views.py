@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .models import Institution, Donation, Category
-from .forms import UserCreationForm
+from .models import Institution, Donation, Category, User
+from .forms import UserCreationForm, DonationForm
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from django.db.models import Sum
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.generic import UpdateView
 
 
@@ -88,24 +88,15 @@ class FormConfirmationView(View):
         return render(request, "charity_donation/form-confirmation.html")
     
     def post(self, request):
-        donation = Donation()
-        donation.quantity = request.POST['bags']
-        donation.institution = Institution.objects.get(pk=request.POST['organization'])
-        donation.address = request.POST['address']
-        donation.city = request.POST['city']
-        donation.zip_code = request.POST['postcode']
-        donation.phone_number = request.POST['phone']
-        donation.pick_up_date = request.POST['data']
-        donation.pick_up_time = request.POST['time']
-        donation.pick_up_comment = request.POST['more_info']
-        donation.user = request.user
-        donation.save()
+        form = DonationForm(request.POST)
+        if form.is_valid():
+            donation = form.save(commit=False)
+            donation.user = request.user
+            donation.save()
+            return JsonResponse({'massage': 'Data send succesful!'})
+        else:
+            return JsonResponse({'massage': 'Something goes wrong, try again.'})
 
-        for category in request.POST['categories']:
-            donation.categories.add(Category.objects.get(pk=int(category)))
-
-        return HttpResponse('Data send successful')
-    
 
 def logout_view(request):
     logout(request)
@@ -130,3 +121,8 @@ class TekenDonationTrue(View):
                 donation.is_taken = True
                 donation.save()
             return redirect('UserPanel')
+        
+class UpdateUser(UpdateView):
+    model = User
+    template_name = 'charity_donation/user-update.html'
+    fields = ['last_name', 'first_name']

@@ -1,0 +1,23 @@
+{% extends "charity_donation/base.html" %}
+{% load static %}
+{% block title %}Aktualzuj dane{% endblock title %}
+{% block content %}
+          <h2>
+            Ustawienia
+          </h2>
+
+    </header>
+
+    <div style='margin-left: auto; margin-right:auto;'>
+        <form method="post"  enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {{form.as_div}}
+
+            <button class="btn" type="submit">Aktualizuj</button>
+        </form>
+    </div>
+
+
+    <script src='{% static "js/app.js" %}'></script>
+{% endblock content %}

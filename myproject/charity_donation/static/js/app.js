@@ -280,7 +280,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
               const labelInput = document.createElement("input");
               labelInput.type = "radio";
-              labelInput.name = "organization";
+              labelInput.name = "institution";
               labelInput.value = instituion.pk;
               institutionLabel.appendChild(labelInput)
 
@@ -326,22 +326,20 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     dataAndTime(){
-      const data = document.querySelector('input[name="data"]');
-    //   const time = document.querySelector('input[name="time"]');
-
-    //   const today = new Date().getDay();
+      const pick_up_date = document.querySelector('input[name="pick_up_date"]');
+      console.log(pick_up_date)
       let monday = new Date();
 
-      data.min = monday.toISOString().split('T')[0];
+      pick_up_date.min = monday.toISOString().split('T')[0];
 
     }
 
     step4valid(){
       const address = document.querySelector('input[name="address"]');
       const city = document.querySelector('input[name="city"]');
-      const postcode = document.querySelector('input[name="postcode"]');
-      const phone = document.querySelector('input[name="phone"]');
-      const time = document.querySelector('input[name="time"]');
+      const zip_code = document.querySelector('input[name="zip_code"]');
+      const phone_number = document.querySelector('input[name="phone_number"]');
+      const time = document.querySelector('input[name="pick_up_time"]');
       let controlNumber = 0
 
       if (address.value < 1) {
@@ -356,16 +354,16 @@ document.addEventListener("DOMContentLoaded", function() {
         controlNumber = 1
       }
 
-      if (!/^\d{2}-\d{3}$/.test(postcode.value)) {
-        postcode.placeholder = 'Kod musi mieć format 00-000';
-        postcode.style.backgroundColor = '#FFDDDD';
+      if (!/^\d{2}-\d{3}$/.test(zip_code.value)) {
+        zip_code.placeholder = 'Kod musi mieć format 00-000';
+        zip_code.style.backgroundColor = '#FFDDDD';
         controlNumber = 1
       }
 
-      if (!/^\d{9}$/.test(phone.value)) {
-        phone.placeholder = 'Numer jest za krótki!';
-        phone.value = '';
-        phone.style.backgroundColor = '#FFDDDD';
+      if (!/^\d{9}$/.test(phone_number.value)) {
+        phone_number.placeholder = 'Numer jest za krótki!';
+        phone_number.value = '';
+        phone_number.style.backgroundColor = '#FFDDDD';
         controlNumber = 1
       }
 
@@ -386,24 +384,24 @@ document.addEventListener("DOMContentLoaded", function() {
     step5Summary(){
       this.formdata = new FormData(document.querySelector('form'));
 
-      if (this.formdata.get('more_info') < 1) {
-        this.formdata.set('more_info', 'Brak uwag.')
+      if (this.formdata.get('pick_up_comment') < 1) {
+        this.formdata.set('pick_up_comment', 'Brak uwag.')
       }
 
       let instituionToShow, quantityOfBags;
 
       instituions.forEach(institution => {
-        if (institution.pk == this.formdata.get('organization')) {
+        if (institution.pk == this.formdata.get('institution')) {
           instituionToShow = institution
         }
       });
 
-      if(this.formdata.get('bags') == 1)
+      if(this.formdata.get('quantity') == 1)
       {quantityOfBags = 'Oddajesz potrzebującym 1 worek, dziękujemy :)'}
-      else if(this.formdata.get('bags') < 5)
-      {quantityOfBags = `Oddajesz potrzebującym ${this.formdata.get('bags')} worki, hojny gest, dziękujemy!`}
+      else if(this.formdata.get('quantity') < 5)
+      {quantityOfBags = `Oddajesz potrzebującym ${this.formdata.get('quantity')} worki, hojny gest, dziękujemy!`}
       else
-      {quantityOfBags = `Oddajesz potrzebującym ${this.formdata.get('bags')} worków! Jesteś prawdziwym dobroczyńcą!`}
+      {quantityOfBags = `Oddajesz potrzebującym ${this.formdata.get('quantity')} worków! Jesteś prawdziwym dobroczyńcą!`}
 
       let summaryDiv = document.querySelector('.summary');
       summaryDiv.innerHTML = ''
@@ -431,12 +429,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
       let formSectionColumn1 = document.createElement(`div`);
       formSectionColumn1.className = `form-section--column`;
-      formSectionColumn1.innerHTML = `<h4>Adres odbioru:</h4><ul><li>${this.formdata.get('address')}</li><li>${this.formdata.get('city')}</li><li>${this.formdata.get('postcode')}</li><li>${this.formdata.get('phone')}</li></ul>`;
+      formSectionColumn1.innerHTML = `<h4>Adres odbioru:</h4><ul><li>${this.formdata.get('address')}</li><li>${this.formdata.get('city')}</li><li>${this.formdata.get('zip_code')}</li><li>${this.formdata.get('phone_number')}</li></ul>`;
       formSection2.appendChild(formSectionColumn1);
 
       let formSectionColumn2 = document.createElement(`div`);
       formSectionColumn2.className = `form-section--column`;
-      formSectionColumn2.innerHTML = `<h4>Termin odbioru:</h4><ul><li>${this.formdata.get('data')}</li><li>${this.formdata.get('time')}</li><li>${this.formdata.get('more_info')}</li></ul>`;
+      formSectionColumn2.innerHTML = `<h4>Termin odbioru:</h4><ul><li>${this.formdata.get('pick_up_date')}</li><li>${this.formdata.get('pick_up_time')}</li><li>${this.formdata.get('pick_up_comment')}</li></ul>`;
       formSection2.appendChild(formSectionColumn2);
 
       summaryDiv.appendChild(formSection2);
@@ -453,7 +451,6 @@ document.addEventListener("DOMContentLoaded", function() {
     updateForm() {
       this.$step.innerText = this.currentStep;
 
-      // TODO: Validation
       if(this.currentStep == 2) this.saveCategories();
       if(this.currentStep == 3){ 
         this.validateQuantitiesOfBags();
@@ -481,11 +478,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     }
 
-    /**
-     * Submit form
-     *
-     * // TODO: validation, send data to server
-     */
+ 
+     // Submit form
+   
     submit(e) {
       e.preventDefault();
       
@@ -496,7 +491,7 @@ document.addEventListener("DOMContentLoaded", function() {
         body: this.formdata,
       })
         .then(res => res)
-        .then(data => JSON.stringify(data))
+        .then(data => JSON.stringify(data)) //TODO:przekierowanie z django
         .catch(err => err);
 
         location.replace("/dziekujemy/")
