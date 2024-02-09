@@ -7,10 +7,15 @@ class UserCreationForm(DjangoUserCreationForm):
     class Meta:
         model = User
         fields = ("first_name", "last_name", "email", "password1", "password2")
-    # get_user_model()
 
 
 class DonationForm(ModelForm):
     class Meta:
         model = Donation
         exclude = ('user',)
+
+
+class UserUpdateForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name",)

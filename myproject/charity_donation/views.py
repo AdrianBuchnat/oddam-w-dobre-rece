@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .models import Institution, Donation, Category
-from .forms import UserCreationForm, DonationForm
+from .models import Institution, Donation, Category, User
+from .forms import UserCreationForm, DonationForm, UserUpdateForm
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from django.db.models import Sum
-from django.http import JsonResponse
-
+from django.http import JsonResponse, HttpResponseRedirect
 
 
 # Create your views here.
@@ -125,3 +124,11 @@ class TekenDonationTrue(View):
 class UpdateUser(View):
     def get(self, request, pk):
         return render(request, "charity_donation/user-update.html")
+    
+    def post(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        form = UserUpdateForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(request.path_info)
+
