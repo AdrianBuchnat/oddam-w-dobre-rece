@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from django.db.models import Sum
 from django.http import JsonResponse, HttpResponseRedirect
+from django.core.mail import send_mail
 
 
 # Create your views here.
@@ -59,8 +60,20 @@ class RegisterView(View):
         form = UserCreationForm(request.POST)
 
         if form.is_valid():
+            # user = form.save(commit=False)
+            # user.is_active = False
             form.save()
-            return redirect("LoginPage")
+
+            # send_mail(
+            #     'Condirmation your register',
+            #     f'Potwierdź rejestracje klikając link: ',
+            #     'adrianbuchnatsmtp.gmail.com',
+            #     [user.email],
+            #     fail_silently=False,
+            # )
+
+
+            return redirect("Confirmation")
         else:
             form = UserCreationForm()
             return render(request, "charity_donation/register.html")
@@ -131,4 +144,9 @@ class UpdateUser(View):
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(request.path_info)
+        
+
+class ConfirmationView(View):
+    def get(self, request):
+        return render(request, "charity_donation/thanks_for_registration.html" )
 

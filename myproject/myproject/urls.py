@@ -19,8 +19,10 @@ from django.urls import path
 from charity_donation.views import(
     IndexView, MainFormView, RegisterView,
     LoginView, FormConfirmationView, logout_view, 
-    UserPanelView, TekenDonationTrue, UpdateUser
+    UserPanelView, TekenDonationTrue, UpdateUser,
+    ConfirmationView
     )
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,9 +30,11 @@ urlpatterns = [
     path('formularz/', MainFormView.as_view(), name='FormPage'),
     path('rejestracja/', RegisterView.as_view(), name='RegisterPage'),
     path('logowanie/', LoginView.as_view(), name='LoginPage'),
+    path('potwierdzenie/', ConfirmationView.as_view(), name='Confirmation'),
     path('dziekujemy/', FormConfirmationView.as_view(), name='FormConfirmationPage'),
     path('logout/', logout_view, name='Logout'),
     path('panel-uzykownika/', UserPanelView.as_view(), name='UserPanel'),
     path('panel-uzykownika/<int:pk>', TekenDonationTrue.as_view(), name='Taken'),
     path('ustawienia/<int:pk>', UpdateUser.as_view(), name='updateUser'),
+    path('zmiana-hasla/', auth_views.PasswordChangeView.as_view(), name="changePassword")
 ]
